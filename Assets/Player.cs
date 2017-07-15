@@ -12,9 +12,8 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            GameObject bullet = Instantiate(projectile, transform.position, Quaternion.identity) as GameObject;
-            bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 150);
-            bullet.GetComponent<Rigidbody>().AddForce(transform.up * 450);
+        	Vector3 droneSpawnPos = new Vector3(transform.position.x + transform.forward.x, transform.position.y + 1, transform.position.z + transform.forward.z);
+            GameObject drone = Instantiate(projectile, droneSpawnPos, Quaternion.identity) as GameObject;
         }
     }
     void Start()
