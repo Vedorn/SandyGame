@@ -3,20 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DroneStart : MonoBehaviour {
-    public Player OrbitTarget;
+    public Player FollowTarget;
     public float speed;
-	// Use this for initialization
-	void Start () {
+    public float hoverForce;
+    public float hoverHeight;
+    private Rigidbody droneRigidbody;
+    public float followDistance;
+    // Use this for initialization
+    void Awake()
+    {
+        droneRigidbody = GetComponent<Rigidbody>();
+    }
+
+    void Start () {
 		
 	}
 	
-	// Update is called once per frame
 	void Update () {
-        OrbitAround();
+        Follow();
 	}
-    
-    void OrbitAround()
+
+    void FixedUpdate()
     {
-        transform.RotateAround(OrbitTarget.transform.position, new Vector3(0, 1, 0), 90);
+        Ray ray = new Ray(transform.position, -transform.up);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, hoverHeight))
+        {
+            float proportionalHeight = (hoverHeight - hit.distance) / hoverHeight;
+            Vector3 appliedHoverForce = Vector3.up * proportionalHeight * hoverForce;
+            droneRigidbody.AddForce(appliedHoverForce, ForceMode.Acceleration);
+        }
+    }
+
+    void Follow()
+    {       
+        FollowTarget = FindObjectOfType<Player>();
+        transform.position = (transform.position - FollowTarget.transform.position).normalized * followDistance + FollowTarget.transform.position;
+        
     }
 }
