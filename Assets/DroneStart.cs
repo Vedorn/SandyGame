@@ -21,7 +21,7 @@ public class DroneStart : MonoBehaviour {
 
     void Start () {
 		
-	OrbitTarget = FindObjectOfType<Player>();
+		OrbitTarget = FindObjectOfType<Player>();
 	}
 	
 	void Update () {
@@ -80,5 +80,6 @@ public class DroneStart : MonoBehaviour {
 
 	void OrbitAround(float x, float y, float z) {
 		position = new Vector3(x, y, z);
+		transform.position = Vector3.Lerp(transform.position, position, 5 * Time.deltaTime);
     }
 }
