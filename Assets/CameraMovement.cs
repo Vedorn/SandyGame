@@ -4,37 +4,43 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour {
     
-    public float xdistance;
-    public float ydistance;
-    public float zdistance;
-    public Player target;
+    float xDistance = 0;
+    float yDistance = -7.5f;
+    float zDistance = 3.77f;
+    float zoomInLimit;
+    float zoomOutLimit;
+    float zoomFactor = 10.0f;
+
+    Player target;
     void Start () {
-		
-	}
+        zoomInLimit = yDistance / 2;
+        zoomOutLimit = yDistance * 1.5f;
+        target = FindObjectOfType<Player>();
+    }
 	
 	// Update is called once per frame
 
     void Zoom(){
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-        {
-            if(ydistance <= -6)
-            { 
-            ydistance = ydistance+2;
-            zdistance = zdistance-1;
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
+            if(yDistance <= zoomInLimit) {
+                float yIncrement = yDistance / zoomFactor;
+                float zIncrement = zDistance / zoomFactor;
+                yDistance -= yIncrement;
+                zDistance -= zIncrement;
             }
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
-        {
-            if(ydistance >= -10)
-            {
-            ydistance = ydistance - 2;
-            zdistance = zdistance + 1;
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0f) { // backwards 
+            if(yDistance >= zoomOutLimit) {
+
+                float yIncrement = yDistance / zoomFactor;
+                float zIncrement = zDistance / zoomFactor;
+                yDistance = yDistance += yIncrement;
+                zDistance = zDistance += zIncrement;
             }
         }
     }
-    void Update()
-    {
+    void Update() {
         Zoom();
-        transform.position = new Vector3(target.transform.position.x - xdistance, target.transform.position.y - ydistance, target.transform.position.z - zdistance);
+        transform.position = new Vector3(target.transform.position.x + target.GetComponent<CapsuleCollider>().center.x - xDistance, target.transform.position.y + target.GetComponent<CapsuleCollider>().center.y - yDistance, target.transform.position.z + target.GetComponent<CapsuleCollider>().center.z - zDistance);
     }
 }
